@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Property;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,12 +14,16 @@ class PropertyInquiry extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public Property $property;
+    public array $inquiryData;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Property $property, array $inquiryData)
     {
-        //
+        $this->property = $property;
+        $this->inquiryData = $inquiryData;
     }
 
     /**
@@ -27,7 +32,8 @@ class PropertyInquiry extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Property Inquiry',
+            subject: 'Property Inquiry: ' . $this->property->title,
+            replyTo: $this->inquiryData['email'],
         );
     }
 
@@ -38,6 +44,10 @@ class PropertyInquiry extends Mailable
     {
         return new Content(
             markdown: 'emails.property-inquiry',
+            with: [
+                'property' => $this->property,
+                'inquiry' => $this->inquiryData,
+            ],
         );
     }
 
