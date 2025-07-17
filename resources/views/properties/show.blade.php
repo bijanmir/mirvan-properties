@@ -8,7 +8,15 @@
 <section class="relative">
     @if($property->images->count() > 0)
         <!-- Image Gallery -->
-        <div class="relative h-96 md:h-[500px] bg-gray-200" x-data="{ currentImage: 0, images: {{ $property->images->toJson() }} }">
+        <div class="relative h-96 md:h-[500px] lg:h-[700px] bg-gray-200" x-data='{!! json_encode([
+    'currentImage' => 0,
+    'images' => $property->images->map(fn($img) => [
+        'id' => $img->id,
+        'image_url' => $img->image_url,
+        'alt_text' => $img->alt_text,
+    ]),
+]) !!}'
+>
             <!-- Main Image -->
             <div class="relative h-full overflow-hidden">
                 <template x-for="(image, index) in images" :key="image.id">
