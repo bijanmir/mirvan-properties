@@ -4,8 +4,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\UserSubmissionController;
-use App\Http\Controllers\ProfileController; // ← ADD THIS LINE
+use App\Http\Controllers\UserPropertySubmissionController; // ← CHANGE THIS LINE
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminPropertyController;
 use App\Http\Controllers\Admin\AdminBlogController;
@@ -49,17 +49,18 @@ Route::get('/about', function () {
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
-// User Property Submissions (Authenticated)
+// User Property Submissions (Authenticated) - UPDATED CONTROLLER
 Route::middleware(['auth'])->prefix('submissions')->name('submissions.')->group(function () {
-    Route::get('/', [UserSubmissionController::class, 'index'])->name('index');
-    Route::get('/create', [UserSubmissionController::class, 'create'])->name('create');
-    Route::post('/', [UserSubmissionController::class, 'store'])->name('store');
-    Route::get('/{submission}', [UserSubmissionController::class, 'show'])->name('show');
-    Route::get('/{submission}/edit', [UserSubmissionController::class, 'edit'])->name('edit');
-    Route::put('/{submission}', [UserSubmissionController::class, 'update'])->name('update');
+    Route::get('/', [UserPropertySubmissionController::class, 'index'])->name('index');
+    Route::get('/create', [UserPropertySubmissionController::class, 'create'])->name('create');
+    Route::post('/', [UserPropertySubmissionController::class, 'store'])->name('store');
+    Route::get('/{submission}', [UserPropertySubmissionController::class, 'show'])->name('show');
+    Route::get('/{submission}/edit', [UserPropertySubmissionController::class, 'edit'])->name('edit');
+    Route::put('/{submission}', [UserPropertySubmissionController::class, 'update'])->name('update');
+    Route::delete('/{submission}', [UserPropertySubmissionController::class, 'destroy'])->name('destroy');
 });
 
-// Profile Management Routes (ADD THIS SECTION)
+// Profile Management Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
