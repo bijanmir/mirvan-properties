@@ -5,6 +5,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\UserSubmissionController;
+use App\Http\Controllers\ProfileController; // ← ADD THIS LINE
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminPropertyController;
 use App\Http\Controllers\Admin\AdminBlogController;
@@ -56,6 +57,13 @@ Route::middleware(['auth'])->prefix('submissions')->name('submissions.')->group(
     Route::get('/{submission}', [UserSubmissionController::class, 'show'])->name('show');
     Route::get('/{submission}/edit', [UserSubmissionController::class, 'edit'])->name('edit');
     Route::put('/{submission}', [UserSubmissionController::class, 'update'])->name('update');
+});
+
+// Profile Management Routes (ADD THIS SECTION)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Admin Routes (Protected)
