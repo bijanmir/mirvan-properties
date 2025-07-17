@@ -11,7 +11,7 @@
         @foreach($properties as $property)
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
                 <div class="relative overflow-hidden">
-                    <img src="{{ $property->getMainImage() }}" 
+                    <img src="{{ Storage::url($property->getMainImage()) }}" 
                          alt="{{ $property->title }}" 
                          class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                          loading="lazy">

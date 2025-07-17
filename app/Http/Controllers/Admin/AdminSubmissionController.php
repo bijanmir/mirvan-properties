@@ -26,13 +26,13 @@ class AdminSubmissionController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('city', 'like', "%{$searchTerm}%")
-                  ->orWhere('contact_name', 'like', "%{$searchTerm}%")
-                  ->orWhereHas('user', function($userQuery) use ($searchTerm) {
-                      $userQuery->where('name', 'like', "%{$searchTerm}%");
-                  });
+                    ->orWhere('city', 'like', "%{$searchTerm}%")
+                    ->orWhere('contact_name', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('name', 'like', "%{$searchTerm}%");
+                    });
             });
         }
 
@@ -71,18 +71,15 @@ class AdminSubmissionController extends Controller
     {
         $request->validate([
             'notes' => 'nullable|string|max:1000',
-            'create_property' => 'boolean',
         ]);
 
         $submission->approve(auth()->id(), $request->notes);
 
-        // Optionally create a property from the submission
-        if ($request->create_property) {
-            $property = $this->createPropertyFromSubmission($submission);
-            $submission->update(['property_id' => $property->id]);
-        }
+        // Always create a property from approved submissions
+        $property = $this->createPropertyFromSubmission($submission);
+        $submission->update(['property_id' => $property->id]);
 
-        return back()->with('success', 'Submission approved successfully.');
+        return back()->with('success', 'Submission approved and property created successfully.');
     }
 
     /**
@@ -147,7 +144,7 @@ class AdminSubmissionController extends Controller
                 if (Storage::disk('public')->exists($imagePath)) {
                     $newPath = 'properties/' . basename($imagePath);
                     Storage::disk('public')->copy($imagePath, $newPath);
-                    
+
                     PropertyImage::create([
                         'property_id' => $property->id,
                         'image_path' => $newPath,
