@@ -12,7 +12,7 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        $query = BlogPost::published()->with('author');
+        $query = BlogPost::published();
 
         // Search functionality
         if ($request->filled('search')) {
