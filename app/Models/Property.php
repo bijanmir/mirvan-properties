@@ -120,9 +120,11 @@ class Property extends Model
 
     public function scopeByLocation(Builder $query, string $location)
     {
-        return $query->where('city', 'like', "%{$location}%")
-                    ->orWhere('state', 'like', "%{$location}%")
-                    ->orWhere('address', 'like', "%{$location}%");
+        return $query->where(function (Builder $query) use ($location) {
+            $query->where('city', 'like', "%{$location}%")
+                  ->orWhere('state', 'like', "%{$location}%")
+                  ->orWhere('address', 'like', "%{$location}%");
+        });
     }
 
     // Accessors & Mutators
@@ -195,6 +197,4 @@ class Property extends Model
     {
         return '$' . number_format($this->price, 0);
     }
-
-    // Add this method to your Property model
 }
